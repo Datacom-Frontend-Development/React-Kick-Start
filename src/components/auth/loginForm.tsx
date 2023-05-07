@@ -1,6 +1,6 @@
 import { useMsal } from "@azure/msal-react";
 
-import { LoginForm } from "../../components/auth/loginForm";
+import { Button } from "../../components/common/Button";
 import {
   Anchor,
   Box,
@@ -88,19 +88,43 @@ const handleLogin = (instance: IPublicClientApplication) => {
     });
 };
 
-export const Login = () => {
-  let navigate = useNavigate();
-  const { classes, cx } = useStyles();
-  const inputSize: MantineSize = "md";
+interface LoginFormProps {
+  size?: MantineSize;
+  welcomeMessage?: ReactNode;
+  onClick?: () => void;
+  errorMessage?: string;
+}
 
-  const { instance } = useMsal();
+export const LoginForm = ({ size, ...props }: LoginFormProps) => {
+  const inputSize: MantineSize = size || "md";
+  const { classes, cx } = useStyles();
 
   return (
-    <Box className={classes.root}>
-      <Box className={cx(classes.column, classes.leftColumn)}></Box>
-      <Box className={cx(classes.column)}>
-        <LoginForm size={"md"} />
-      </Box>
+    <Box className={cx(classes.container)}>
+      {props.welcomeMessage || <Title order={1}>Hello!</Title>}
+      <TextInput
+        label="Your email"
+        type="email"
+        placeholder="Your email"
+        size={inputSize}
+        icon={<IconAt size={16} />}
+      />
+      <PasswordInput
+        placeholder="Password"
+        label="Password"
+        size={inputSize}
+        icon={<IconLock size={16} />}
+      />
+      <Group position="apart">
+        <Anchor href="https://mantine.dev/">Forgot password</Anchor>
+      </Group>
+      <Group grow>
+        <Checkbox size={inputSize} label="Remember me" />
+
+        <Button size={inputSize} primary={true} onClick={props.onClick}>
+          Sign In
+        </Button>
+      </Group>
     </Box>
   );
 };
